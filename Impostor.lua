@@ -1,9 +1,3 @@
--- 第1段代码
-if game:GetService("Players").LocalPlayer:GetAttribute("DoorsScriptLoaded") then
-    return
-end
-game:GetService("Players").LocalPlayer:SetAttribute("DoorsScriptLoaded", true)
-
 local repo = "https://raw.githubusercontent.com/Q2674791739/UI/main/"
 local Library = loadstring(game:HttpGet(repo .. "Library.lua"))()
 local ThemeManager = loadstring(game:HttpGet(repo .. "ThemeManager.lua"))()
@@ -1060,9 +1054,7 @@ MenuGroup:AddLabel("菜单快捷键")
 	:AddKeyPicker("MenuKeybind", {Default = "RightShift", NoUI = true, Text = "呼出/隐藏菜单按键"})
 
 MenuGroup:AddButton("卸载脚本", function()
-	LocalPlayer:SetAttribute("DoorsScriptLoaded", nil)
-
-	for _, connection in ipairs(Connections) do
+        for _, connection in ipairs(Connections) do
 		pcall(function() connection:Disconnect() end)
 	end
 	table.clear(Connections)
