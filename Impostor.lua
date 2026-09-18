@@ -14,6 +14,7 @@ if not ReplicatedStorage:FindFirstChild("RemotesFolder") or not ReplicatedStorag
 end
 
 local ESPLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/bocaj111004/ESPLibrary/refs/heads/main/Library.lua"))()
+ESPLibrary:SetFadeTime(0.25)
 
 local EspObjects = {}
 local Main_Game = nil
