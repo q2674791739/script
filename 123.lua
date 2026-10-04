@@ -1629,10 +1629,6 @@ end
     end)
 end
 
-        Library:Notify("武器就绪", 3)
-    end)
-end
-
 AttrRight:AddToggle("KillAuraVisualize", { Text = "可视化范围（地面红圈）", Default = false }):OnChanged(function(value)
     getgenv().KillAuraVisualizeState = value
     if value then
