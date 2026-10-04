@@ -1539,13 +1539,33 @@ local function AutoPrepareGunKillAura(targetTranslatedName)
             buffer.writeu8(b, 1, 0)   -- 空手
             Fire(b)
         end
-
-        -- ★ Step 0: 如果手持着东西，先卸下（让 hotbar 显示回枪名，才能读到）
-        if IsHoldingSomething() then
-            Unhold()
-            task.wait(0.3)
+        -- Step 0: 卸下手持（再点一次当前手持格 = 收起）
+        local function GetHeldSlot()
+            local pg = LocalPlayer:FindFirstChild("PlayerGui")
+            local hotbar = pg and pg:FindFirstChild("Hotbar")
+            local slots = hotbar and hotbar:FindFirstChild("Slots")
+            if not slots then return nil end
+            for _, slotFrame in ipairs(slots:GetChildren()) do
+                local inner = slotFrame:FindFirstChild("Frame")
+                local img = inner and inner:FindFirstChild("ImageButton")
+                if img then
+                    local stroke = img:FindFirstChildOfClass("UIStroke")
+                    if stroke and stroke.Transparency < 0.5 then
+                        local numL = img:FindFirstChild("SlotNumber")
+                        if numL then return tonumber(numL.Text) or nil end
+                    end
+                end
+            end
+            return nil
         end
 
+        local heldSlot = GetHeldSlot()
+        if heldSlot then
+            SwitchTo(heldSlot)
+            task.wait(0.4)
+        end
+        
+        
         -- Step 1: 检查目标枪在不在背包
         local guns = ScanHotbarGuns()
         local targetInBag = false
@@ -1557,6 +1577,7 @@ local function AutoPrepareGunKillAura(targetTranslatedName)
             return
         end
 
+            
 -- Step 2: 只丢"目标枪前面"的枪，后面的保留
 for i = 1, 20 do
     local curGuns = ScanHotbarGuns()
@@ -1626,6 +1647,7 @@ end
         task.wait(0.3)
         SwitchTo(1)
         task.wait(0.2)
+        Library:Notify("武器已就绪", 3)
     end)
 end
 
