@@ -1311,10 +1311,10 @@ local WeaponLocations = {
     ["小型武器箱1"] = Vector3.new(333.10, 62.56, 97.09),
     ["小型武器箱2"] = Vector3.new(642.24, 78.11, 300.26),
     ["小型武器箱3"] = Vector3.new(-404.64, 61.72, 310.06),
-    ["小型武器箱4"] = Vector3.new(818.04, 62.03, -179.52)
+    ["小型武器箱4"] = Vector3.new(818.04, 62.03, -179.52),
     ["小型武器箱5"] = Vector3.new(-412.85, 61.72, 315.10),
 }
-local WeaponOrder = {"外星步枪", "军械库", "激光枪", "加特林", "远程武器箱1", "远程武器箱2", "远程武器箱3", "小型武器箱4", "小型武器箱1", "小型武器箱2", "小型武器箱3", "小型武器箱4", "小型武器箱5", }
+local WeaponOrder = {"外星步枪", "军械库", "激光枪", "加特林", "远程武器箱1", "远程武器箱2", "远程武器箱3", "远程武器箱4", "小型武器箱1", "小型武器箱2", "小型武器箱3", "小型武器箱4", "小型武器箱5", }
 WeaponGroup:AddDropdown("WeaponDropdown", { Values = WeaponOrder, Default = 1, Multi = false, Text = "选择武器传送点", MaxVisibleDropdownItems = 4 })
 WeaponGroup:AddButton({
     Text = "传送",
