@@ -1,3 +1,4 @@
+-- “KL”意味着“开朗”，“TK”意味着“痛苦”所以名为KL–TK–Hub 一一2674791739
 -- 第 1 段
 if getgenv().KL_TK_Hub_Loaded then
     return
