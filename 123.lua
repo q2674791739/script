@@ -847,7 +847,7 @@ AutoGroup:AddToggle("AutoDeposit", {
                                     end
                                     task.wait(0.5)
                                 else
-                                    if (tick() - getgenv().LastDepositTime > 0.2) then
+                                    if (tick() - (getgenv().LastDepositTime or 0) > 0.2) then
                                         getgenv().LastDepositTime = tick()
                                         local buff = buffer.create(2)
                                         buffer.writeu8(buff, 0, 48)
