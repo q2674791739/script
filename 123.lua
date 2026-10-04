@@ -73,7 +73,7 @@ getgenv().GlobalItemTranslations = {
 
 -- ===== 枪械翻译表 =====
 getgenv().GlobalWeaponTranslations = {
-    ["PumpShotgun"] = "泵动式霰弹枪", ["Revolver"] = "左轮手枪", ["M4A1"] = "M4A1步枪", ["ExoRifle"] = "外星步枪", ["SawedOff"] = "短管霰弹枪", ["SMG"] = "冲锋枪", ["DMR"] = "射手步枪", ["Pistol"] = "半自动手枪", ["Raygun"] = "激光枪", ["Minigun"] = "加特林", ["M1Grand"] = "M1狙击枪",
+    ["PumpShotgun"] = "泵动式霰弹枪", ["Revolver"] = "左轮手枪", ["M4"] = "M4A1步枪", ["Exo Rifle"] = "外星步枪", ["SawedOff"] = "短管霰弹枪", ["SMG"] = "冲锋枪", ["DMR"] = "射手步枪", ["Pistol"] = "半自动手枪", ["Raygun"] = "激光枪", ["Minigun"] = "加特林", ["M1Grand"] = "M1狙击枪",
 
     ["HandCannonLv1"] = "手炮Lv1", ["HandCannonLv2"] = "手炮Lv2", ["HandCannonLv3"] = "手炮Lv3", ["HandCannonLv4"] = "手炮Lv4", ["HandCannonLv5"] = "手炮Lv5",
     ["KaboomCannonLv1"] = "轰天炮Lv1", ["KaboomCannonLv2"] = "轰天炮Lv2", ["KaboomCannonLv3"] = "轰天炮Lv3",
