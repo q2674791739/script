@@ -1,8 +1,8 @@
 -- 第 1 段
-if getgenv().GE_Hub_Loaded then
+if getgenv().KL_TK_Hub_Loaded then
     return
 end
-getgenv().GE_Hub_Loaded = true
+getgenv().KL_TK_Hub_Loaded = true
 
 local TARGET_PLACE_ID = 79327754502290
 if game.PlaceId ~= TARGET_PLACE_ID then
@@ -29,7 +29,7 @@ local LocalPlayer = Players.LocalPlayer
 task.wait(1)
 
 local Window = Library:CreateWindow({
-    Title = "脚本名称",
+    Title = "烤或死 KL–TK",
     Footer = "底部文字",
     NotifySide = "Right",
     ShowCustomCursor = false,
@@ -1818,7 +1818,7 @@ MenuGroup:AddButton("卸载", function()
     local char = LocalPlayer.Character
     local hum = char and char:FindFirstChildOfClass("Humanoid")
     if hum then hum.PlatformStand = false if getgenv().OriginalWalkSpeed then hum.WalkSpeed = getgenv().OriginalWalkSpeed end end
-    getgenv().GE_Hub_Loaded = nil
+    getgenv().KL_TK_Hub_Loaded = nil
     Library:Unload()
 end)
 
@@ -1827,8 +1827,8 @@ ThemeManager:SetLibrary(Library)
 SaveManager:SetLibrary(Library)
 SaveManager:IgnoreThemeSettings()
 SaveManager:SetIgnoreIndexes({ "MenuKeybind" })
-ThemeManager:SetFolder("GEHub")
-SaveManager:SetFolder("GEHub/烤或死")
+ThemeManager:SetFolder("KL-TK-Hub")
+SaveManager:SetFolder("KL-TK-Hub/烤或死")
 SaveManager:SetSubFolder("Config")
 SaveManager:BuildConfigSection(Tabs["UI Settings"])
 ThemeManager:ApplyToTab(Tabs["UI Settings"])
