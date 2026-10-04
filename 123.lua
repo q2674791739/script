@@ -73,7 +73,7 @@ getgenv().GlobalItemTranslations = {
 -- 枪械弹夹上限检测表（手持专用）
 getgenv().GunAmmoLimits = {
     ["45"] = "Exo Rifle",
-    ["30"] = "M4",
+    ["30"] = "M4A1步枪/冲锋枪/射手步枪",
     ["6"]  = "Revolver",
     ["8"]  = "Pistol",
 }
