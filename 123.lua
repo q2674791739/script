@@ -1622,15 +1622,12 @@ end
             task.wait(0.2)
         end
 
-        -- Step 4: 切到第 1 格（让枪变手持）
-        local finalGuns = ScanHotbarGuns()
-        if #finalGuns > 0 then
-            local first = finalGuns[1]
-            for _, g in ipairs(finalGuns) do
-                if g.slot < first.slot then first = g end
-            end
-            SwitchTo(first.slot)
-        end
+-- ★ Step 4: 直接切第 1 格（此时目标枪已在第 1 格）
+        task.wait(0.3)
+        SwitchTo(1)
+        task.wait(0.2)
+    end)
+end
 
         Library:Notify("武器就绪", 3)
     end)
