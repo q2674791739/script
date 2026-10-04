@@ -1308,12 +1308,13 @@ local WeaponLocations = {
     ["远程武器箱2"] = Vector3.new(-238.17, 25.23, 457.84),
     ["远程武器箱3"] = Vector3.new(-275.51, 11.23, 337.59),
     ["远程武器箱4"] = Vector3.new(-106.53, 25.21, 506.10),
-    ["近战武器箱1"] = Vector3.new(333.10, 62.56, 97.09),
-    ["近战武器箱2"] = Vector3.new(642.24, 78.11, 300.26),
-    ["近战武器箱3"] = Vector3.new(-404.64, 61.72, 310.06),
-    ["近战武器箱4"] = Vector3.new(818.04, 62.03, -179.52)
+    ["小型武器箱1"] = Vector3.new(333.10, 62.56, 97.09),
+    ["小型武器箱2"] = Vector3.new(642.24, 78.11, 300.26),
+    ["小型武器箱3"] = Vector3.new(-404.64, 61.72, 310.06),
+    ["小型武器箱4"] = Vector3.new(818.04, 62.03, -179.52)
+    ["小型武器箱5"] = Vector3.new(-412.85, 61.72, 315.10),
 }
-local WeaponOrder = {"外星步枪", "军械库", "激光枪", "加特林", "远程武器箱1", "远程武器箱2", "远程武器箱3", "远程武器箱4", "近战武器箱1", "近战武器箱2", "近战武器箱3", "近战武器箱4", }
+local WeaponOrder = {"外星步枪", "军械库", "激光枪", "加特林", "远程武器箱1", "远程武器箱2", "远程武器箱3", "小型武器箱4", "小型武器箱1", "小型武器箱2", "小型武器箱3", "小型武器箱4", "小型武器箱5", }
 WeaponGroup:AddDropdown("WeaponDropdown", { Values = WeaponOrder, Default = 1, Multi = false, Text = "选择武器传送点", MaxVisibleDropdownItems = 4 })
 WeaponGroup:AddButton({
     Text = "传送",
@@ -1341,7 +1342,7 @@ WeaponGroup:AddButton({
             end
             AutoOpenNearestCrate("MediumWeaponCrate", target)
 
-        elseif string.find(selected, "近战武器箱") then
+        elseif string.find(selected, "小型武器箱") then
             if Toggles.FastInteractToggle and not Toggles.FastInteractToggle.Value then
                 Toggles.FastInteractToggle:SetValue(true)
             end
@@ -1506,7 +1507,6 @@ local function IsHoldingSomething()
     return false
 end
 
--- 自动准备：只留目标枪在第 1 格，其他枪全丢，前置非枪物品也丢
 local function AutoPrepareGunKillAura(targetTranslatedName)
     task.spawn(function()
         local RS = game:GetService("ReplicatedStorage")
@@ -1539,45 +1539,56 @@ local function AutoPrepareGunKillAura(targetTranslatedName)
             buffer.writeu8(b, 1, 0)   -- 空手
             Fire(b)
         end
-        -- Step 0: 卸下手持（再点一次当前手持格 = 收起）
-        local function GetHeldSlot()
-            local pg = LocalPlayer:FindFirstChild("PlayerGui")
-            local hotbar = pg and pg:FindFirstChild("Hotbar")
-            local slots = hotbar and hotbar:FindFirstChild("Slots")
-            if not slots then return nil end
-            for _, slotFrame in ipairs(slots:GetChildren()) do
-                local inner = slotFrame:FindFirstChild("Frame")
-                local img = inner and inner:FindFirstChild("ImageButton")
-                if img then
-                    local stroke = img:FindFirstChildOfClass("UIStroke")
-                    if stroke and stroke.Transparency < 0.5 then
-                        local numL = img:FindFirstChild("SlotNumber")
-                        if numL then return tonumber(numL.Text) or nil end
-                    end
-                end
+
+-- Step 0: 卸下手持（先切自己，再空手）
+local function GetHeldSlot()
+    local pg = LocalPlayer:FindFirstChild("PlayerGui")
+    local hotbar = pg and pg:FindFirstChild("Hotbar")
+    local slots = hotbar and hotbar:FindFirstChild("Slots")
+    if not slots then return nil end
+    for _, slotFrame in ipairs(slots:GetChildren()) do
+        local inner = slotFrame:FindFirstChild("Frame")
+        local img = inner and inner:FindFirstChild("ImageButton")
+        if img then
+            local stroke = img:FindFirstChildOfClass("UIStroke")
+            if stroke and stroke.Transparency < 0.5 then
+                local numL = img:FindFirstChild("SlotNumber")
+                if numL then return tonumber(numL.Text) or nil end
             end
-            return nil
         end
+    end
+    return nil
+end
 
-        local heldSlot = GetHeldSlot()
-        if heldSlot then
-            SwitchTo(heldSlot)
-            task.wait(0.4)
-        end
+local heldSlot = GetHeldSlot()
+if heldSlot then
+    -- 第一包：切到手持格
+    local b1 = buffer.create(3)
+    buffer.writeu8(b1, 0, 44)
+    buffer.writeu8(b1, 1, 1)
+    buffer.writeu8(b1, 2, heldSlot)
+    Fire(b1)
+    task.wait(0.1)
+
+    local b2 = buffer.create(2)
+    buffer.writeu8(b2, 0, 44)
+    buffer.writeu8(b2, 1, 0)
+    Fire(b2)
+    task.wait(0.4)
+end
         
         
-        -- Step 1: 检查目标枪在不在背包
-        local guns = ScanHotbarGuns()
-        local targetInBag = false
-        for _, g in ipairs(guns) do
-            if g.chinese == targetTranslatedName then targetInBag = true break end
-        end
-        if not targetInBag then
-            Library:Notify("背包里没有 " .. targetTranslatedName, 4)
-            return
-        end
-
-            
+-- Step 1: 检查目标枪在不在背包
+local guns = ScanHotbarGuns()
+local targetInBag = false
+for _, g in ipairs(guns) do
+    if g.chinese == targetTranslatedName then targetInBag = true break end
+end
+if not targetInBag then
+    Library:Notify("背包里没有 " .. targetTranslatedName, 4)
+    return
+end
+           
 -- Step 2: 只丢"目标枪前面"的枪，后面的保留
 for i = 1, 20 do
     local curGuns = ScanHotbarGuns()
