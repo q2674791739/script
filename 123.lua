@@ -235,49 +235,43 @@ local QuickGroup = Tabs.Main:AddLeftGroupbox("一键交互")
 QuickGroup:AddButton({
     Text = "一键开箱",
     Func = function()
+        -- 自动打开快速交互
         if Toggles.FastInteractToggle and not Toggles.FastInteractToggle.Value then
-    Toggles.FastInteractToggle:SetValue(true)
-end
+            Toggles.FastInteractToggle:SetValue(true)
+        end
+
         task.spawn(function()
-            local char = LocalPlayer.Character
-            local hrp = char and char:FindFirstChild("HumanoidRootPart")
             local containers = workspace:FindFirstChild("Containers")
-
-            if not hrp or not containers then
-                Library:Notify("找不到角色或箱子文件夹", 3)
+            if not containers then
+                Library:Notify("找不到 Containers", 3)
                 return
             end
 
-            local chestsToOpen = {}
+            local opened = 0
+
             for _, chest in ipairs(containers:GetChildren()) do
-                local prompt = nil
-                for _, d in ipairs(chest:GetDescendants()) do
-                    if d:IsA("ProximityPrompt") and d.Enabled then
-                        prompt = d
-                        break
-                    end
+                -- 固定路径查找：chest → Top → ProximityPrompt
+                local node = chest
+                local pathSegs = { "Top", "ProximityPrompt" }
+                for _, seg in ipairs(pathSegs) do
+                    node = node and node:FindFirstChild(seg)
                 end
-                if prompt then
-                    table.insert(chestsToOpen, { chest = chest, prompt = prompt })
+
+                if node and node:IsA("ProximityPrompt") and node.Enabled then
+                    local oldLOS = node.RequiresLineOfSight
+                    node.RequiresLineOfSight = false
+                    pcall(function() fireproximityprompt(node, 1) end)
+                    node.RequiresLineOfSight = oldLOS
+                    opened = opened + 1
+                    task.wait(0.1)
                 end
             end
 
-            if #chestsToOpen == 0 then
-                Library:Notify("没有找到未开启的箱子", 3)
-                return
+            if opened == 0 then
+                Library:Notify("没有找到可开启的箱子", 3)
+            else
+                Library:Notify("远程开箱完成，共 " .. opened .. " 个", 3)
             end
-
-            Library:Notify("开始远程开箱，共 " .. #chestsToOpen .. " 个", 3)
-
-            for i, item in ipairs(chestsToOpen) do
-                local oldLOS = item.prompt.RequiresLineOfSight
-                item.prompt.RequiresLineOfSight = false
-                pcall(function() fireproximityprompt(item.prompt, 1) end)
-                item.prompt.RequiresLineOfSight = oldLOS
-                task.wait(0.1)
-            end
-
-            Library:Notify("远程开箱完成！", 3)
         end)
     end,
     DoubleClick = false,
