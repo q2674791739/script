@@ -1437,6 +1437,159 @@ AttrLeft:AddSlider("FlightSpeed", { Text = "飞行速度", Default = 5, Min = 1,
 -- 第 14 段
 local AttrRight = Tabs.Attributes:AddRightGroupbox("远程武器杀戮光环")
 AttrRight:AddSlider("KillAuraRange", { Text = "范围", Default = 66, Min = 15, Max = 500, Rounding = 0 })
+
+-- ===== 武器优先级下拉 =====
+local GunNameList = {}
+local seenGunName = {}
+for _, trans in pairs(getgenv().GlobalWeaponTranslations) do
+    if not seenGunName[trans] then
+        seenGunName[trans] = true
+        table.insert(GunNameList, trans)
+    end
+end
+table.sort(GunNameList)
+
+AttrRight:AddDropdown("KillAuraPriority", {
+    Values = GunNameList,
+    Default = 1,
+    Multi = false,
+    Text = "武器优先级（杀戮使用）",
+    MaxVisibleDropdownItems = 4,
+})
+
+-- 翻译名 → 英文原名
+local function GetEnglishGunName(translatedName)
+    for eng, trans in pairs(getgenv().GlobalWeaponTranslations) do
+        if trans == translatedName then return eng end
+    end
+    return translatedName
+end
+
+-- 扫 hotbar 里的所有枪
+local function ScanHotbarGuns()
+    local pg = LocalPlayer:FindFirstChild("PlayerGui")
+    local hotbar = pg and pg:FindFirstChild("Hotbar")
+    local slots = hotbar and hotbar:FindFirstChild("Slots")
+    if not slots then return {} end
+
+    local guns = {}
+    for _, slotFrame in ipairs(slots:GetChildren()) do
+        local inner = slotFrame:FindFirstChild("Frame")
+        local img = inner and inner:FindFirstChild("ImageButton")
+        if img then
+            local numL = img:FindFirstChild("SlotNumber")
+            local typeL = img:FindFirstChild("SlotType")
+            local nameL = img:FindFirstChild("Name")
+            if numL and typeL and nameL and typeL.Text == "Gun" then
+                table.insert(guns, {
+                    slot = tonumber(numL.Text) or 0,
+                    name = nameL.Text,
+                })
+            end
+        end
+    end
+    return guns
+end
+
+-- 自动准备：只留目标枪在第 1 格，其他枪全丢，前置非枪物品也丢
+local function AutoPrepareGunKillAura(targetTranslatedName)
+    task.spawn(function()
+        local RS = game:GetService("ReplicatedStorage")
+        local ZAP = RS:FindFirstChild("ZAP")
+        local ZAP_RELIABLE = ZAP and ZAP:FindFirstChild("ZAP_RELIABLE")
+        if not ZAP_RELIABLE then
+            Library:Notify("找不到 ZAP", 3)
+            return
+        end
+
+        local targetEng = GetEnglishGunName(targetTranslatedName)
+
+        local function Fire(buf)
+            pcall(function() ZAP_RELIABLE:FireServer(buf, {}) end)
+        end
+        local function SwitchTo(slotNum)
+            local b = buffer.create(3)
+            buffer.writeu8(b, 0, 44)
+            buffer.writeu8(b, 1, 1)
+            buffer.writeu8(b, 2, slotNum)
+            Fire(b)
+        end
+        local function DropHeld()
+            local b = buffer.create(2)
+            buffer.writeu8(b, 0, 48)
+            buffer.writeu8(b, 1, 0)
+            Fire(b)
+        end
+
+        -- Step 1: 检查目标枪在不在背包
+        local guns = ScanHotbarGuns()
+        local targetInBag = false
+        for _, g in ipairs(guns) do
+            if g.name == targetEng then targetInBag = true break end
+        end
+        if not targetInBag then
+            Library:Notify("背包里没有 " .. targetTranslatedName, 4)
+            return
+        end
+
+        -- Step 2: 丢其他枪（保留目标枪）
+        for i = 1, 20 do
+            local curGuns = ScanHotbarGuns()
+            if #curGuns <= 1 then break end
+
+            local toDrop = nil
+            for _, g in ipairs(curGuns) do
+                if g.name ~= targetEng then
+                    toDrop = g
+                    break
+                end
+            end
+            if not toDrop then break end
+
+            SwitchTo(toDrop.slot)
+            task.wait(0.15)
+            DropHeld()
+            task.wait(0.2)
+        end
+
+        -- Step 3: 丢第 1 格的非枪物品，直到第 1 格是枪
+        for i = 1, 40 do
+            local pg = LocalPlayer:FindFirstChild("PlayerGui")
+            local hotbar = pg and pg:FindFirstChild("Hotbar")
+            local slots = hotbar and hotbar:FindFirstChild("Slots")
+            if not slots then break end
+
+            local firstSlot = nil
+            local minNum = math.huge
+            for _, slotFrame in ipairs(slots:GetChildren()) do
+                local inner = slotFrame:FindFirstChild("Frame")
+                local img = inner and inner:FindFirstChild("ImageButton")
+                if img then
+                    local numL = img:FindFirstChild("SlotNumber")
+                    local typeL = img:FindFirstChild("SlotType")
+                    if numL and typeL then
+                        local num = tonumber(numL.Text) or 0
+                        if num > 0 and num < minNum then
+                            minNum = num
+                            firstSlot = { slot = num, type = typeL.Text }
+                        end
+                    end
+                end
+            end
+
+            if not firstSlot then break end
+            if firstSlot.type == "Gun" then break end
+
+            SwitchTo(firstSlot.slot)
+            task.wait(0.15)
+            DropHeld()
+            task.wait(0.2)
+        end
+
+        Library:Notify("武器就绪", 3)
+    end)
+end
+
 AttrRight:AddToggle("KillAuraVisualize", { Text = "可视化范围（地面红圈）", Default = false }):OnChanged(function(value)
     getgenv().KillAuraVisualizeState = value
     if value then
@@ -1460,9 +1613,17 @@ AttrRight:AddToggle("KillAuraVisualize", { Text = "可视化范围（地面红�
         if getgenv().KillAuraRing then getgenv().KillAuraRing:Destroy() getgenv().KillAuraRing = nil end
     end
 end)
+
 AttrRight:AddToggle("KillAuraToggle", { Text = "开启远程杀戮", Default = false }):OnChanged(function(value)
     getgenv().KillAuraState = value
     if value then
+        -- ★ 开启时先清理：其他枪丢掉、前置物品丢掉，留目标枪在第 1 格
+        local priority = Options.KillAuraPriority and Options.KillAuraPriority.Value
+        if priority then
+            AutoPrepareGunKillAura(priority)
+            task.wait(1)
+        end
+
         task.spawn(function()
             local ZAP = ReplicatedStorage:WaitForChild("ZAP")
             local ZAP_RELIABLE = ZAP:WaitForChild("ZAP_RELIABLE")
@@ -1508,7 +1669,7 @@ AttrRight:AddToggle("KillAuraToggle", { Text = "开启远程杀戮", Default = f
         end)
     end
 end)
-
+-- 第 15 段
 -- ===== 教程页 =====
 local SkipDayInfoGroup = Tabs.Info:AddLeftGroupbox("“跳过一天”解锁教程")
 SkipDayInfoGroup:AddLabel("餐厅门旁边的“跳过一天”如何解锁？")
