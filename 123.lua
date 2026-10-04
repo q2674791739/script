@@ -1557,25 +1557,36 @@ local function AutoPrepareGunKillAura(targetTranslatedName)
             return
         end
 
-        -- Step 2: 丢其他枪（保留目标枪）
-        for i = 1, 20 do
-            local curGuns = ScanHotbarGuns()
-            if #curGuns <= 1 then break end
+-- Step 2: 只丢"目标枪前面"的枪，后面的保留
+for i = 1, 20 do
+    local curGuns = ScanHotbarGuns()
+    if #curGuns <= 1 then break end
 
-            local toDrop = nil
-            for _, g in ipairs(curGuns) do
-                if g.chinese ~= targetTranslatedName then
-                    toDrop = g
-                    break
-                end
-            end
-            if not toDrop then break end
-
-            SwitchTo(toDrop.slot)
-            task.wait(0.15)
-            DropHeld()
-            task.wait(0.2)
+    -- 找目标枪的 slot
+    local targetSlot = nil
+    for _, g in ipairs(curGuns) do
+        if g.chinese == targetTranslatedName then
+            targetSlot = g.slot
+            break
         end
+    end
+    if not targetSlot then break end
+
+    -- 找目标枪前面（slot 更小）的第一把非目标枪
+    local toDrop = nil
+    for _, g in ipairs(curGuns) do
+        if g.slot < targetSlot and g.chinese ~= targetTranslatedName then
+            toDrop = g
+            break
+        end
+    end
+    if not toDrop then break end
+
+    SwitchTo(toDrop.slot)
+    task.wait(0.15)
+    DropHeld()
+    task.wait(0.2)
+end
 
         -- Step 3: 丢第 1 格的非枪物品
         for i = 1, 40 do
