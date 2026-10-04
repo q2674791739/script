@@ -70,7 +70,13 @@ getgenv().GlobalItemTranslations = {
 
     ["RatMeat"] = "老鼠肉", ["SewerRat"] = "下水道老鼠", ["RadioactiveRat"] = "放射性老鼠", ["PepperGhost"] = "辣椒幽灵", ["CactusCreeper"] = "仙人掌爬行者", ["EvilCow"] = "邪恶的牛", ["EvilChicken"] = "邪恶的鸡", ["EvilScientistBoss"] = "格林博士", ["GrimcrustSupremeHead"] = "至尊头"
 }
-
+-- 枪械弹夹上限检测表（手持专用）
+getgenv().GunAmmoLimits = {
+    ["45"] = "Exo Rifle",
+    ["30"] = "M4",
+    ["6"]  = "Revolver",
+    ["8"]  = "Pistol",
+}
 -- ===== 枪械翻译表 =====
 getgenv().GlobalWeaponTranslations = {
     ["PumpShotgun"] = "泵动式霰弹枪", ["Revolver"] = "左轮手枪", ["M4"] = "M4A1步枪", ["Exo Rifle"] = "外星步枪", ["SawedOff"] = "短管霰弹枪", ["SMG"] = "冲锋枪", ["DMR"] = "射手步枪", ["Pistol"] = "半自动手枪", ["Raygun"] = "激光枪", ["Minigun"] = "加特林", ["M1Grand"] = "M1狙击枪",
@@ -1439,26 +1445,68 @@ AttrLeft:AddSlider("FlightSpeed", { Text = "飞行速度", Default = 5, Min = 1,
 local AttrRight = Tabs.Attributes:AddRightGroupbox("远程武器杀戮光环")
 AttrRight:AddSlider("KillAuraRange", { Text = "范围", Default = 66, Min = 15, Max = 500, Rounding = 0 })
 
--- ===== 武器优先级下拉 =====
-local GunNameList = {}
-local seenGunName = {}
-for _, trans in pairs(getgenv().GlobalWeaponTranslations) do
-    if not seenGunName[trans] then
-        seenGunName[trans] = true
-        table.insert(GunNameList, trans)
-    end
-end
-table.sort(GunNameList)
-
+-- ===== 武器优先级下拉（自动显示背包里的枪）====
 AttrRight:AddDropdown("KillAuraPriority", {
-    Values = GunNameList,
+    Values = {"加载中…"},
     Default = 1,
     Multi = false,
     Text = "武器优先级（杀戮使用）",
     MaxVisibleDropdownItems = 4,
 })
 
--- 扫 hotbar 里的所有枪
+local function GetBagGunNames()
+    local pg = LocalPlayer:FindFirstChild("PlayerGui")
+    local hotbar = pg and pg:FindFirstChild("Hotbar")
+    local slots = hotbar and hotbar:FindFirstChild("Slots")
+    if not slots then return {} end
+
+    local gunNames = {}
+    local seen = {}
+    for _, slotFrame in ipairs(slots:GetChildren()) do
+        local inner = slotFrame:FindFirstChild("Frame")
+        local img = inner and inner:FindFirstChild("ImageButton")
+        if img then
+            local typeL = img:FindFirstChild("SlotType")
+            local nameL = img:FindFirstChild("Name")
+            if typeL and nameL and typeL.Text == "Gun" then
+                local raw = nameL.Text
+                -- 弹夹反查
+                local maxAmmo = raw:match("^%d+/(%d+)$")
+                if maxAmmo and getgenv().GunAmmoLimits and getgenv().GunAmmoLimits[maxAmmo] then
+                    raw = getgenv().GunAmmoLimits[maxAmmo]
+                end
+                local chinese = getgenv().GlobalWeaponTranslations[raw] or raw
+                if not seen[chinese] then
+                    seen[chinese] = true
+                    table.insert(gunNames, chinese)
+                end
+            end
+        end
+    end
+    table.sort(gunNames)
+    return gunNames
+end
+
+local lastGunListStr = ""
+task.spawn(function()
+    while true do
+        task.wait(2)
+        if Options.KillAuraPriority then
+            local names = GetBagGunNames()
+            if #names == 0 then names = {"（背包里没有枪）"} end
+            local nowStr = table.concat(names, "|")
+            if nowStr ~= lastGunListStr then
+                lastGunListStr = nowStr
+                local old = Options.KillAuraPriority.Value
+                Options.KillAuraPriority:SetValues(names)
+                if old and table.find(names, old) then
+                    Options.KillAuraPriority:SetValue(old)
+                end
+            end
+        end
+    end
+end)
+
 local function ScanHotbarGuns()
     local pg = LocalPlayer:FindFirstChild("PlayerGui")
     local hotbar = pg and pg:FindFirstChild("Hotbar")
@@ -1475,6 +1523,13 @@ local function ScanHotbarGuns()
             local nameL = img:FindFirstChild("Name")
             if numL and typeL and nameL and typeL.Text == "Gun" then
                 local rawName = nameL.Text
+
+                -- ★ 弹夹反查
+                local maxAmmo = rawName:match("^%d+/(%d+)$")
+                if maxAmmo and getgenv().GunAmmoLimits and getgenv().GunAmmoLimits[maxAmmo] then
+                    rawName = getgenv().GunAmmoLimits[maxAmmo]
+                end
+
                 local chinese = getgenv().GlobalWeaponTranslations[rawName] or rawName
                 table.insert(guns, {
                     slot = tonumber(numL.Text) or 0,
@@ -1487,7 +1542,6 @@ local function ScanHotbarGuns()
     return guns
 end
 
--- 检测当前是否有手持物品
 local function IsHoldingSomething()
     local pg = LocalPlayer:FindFirstChild("PlayerGui")
     local hotbar = pg and pg:FindFirstChild("Hotbar")
@@ -1533,51 +1587,7 @@ local function AutoPrepareGunKillAura(targetTranslatedName)
             buffer.writeu8(b, 1, 0)
             Fire(b)
         end
-        local function Unhold()
-            local b = buffer.create(2)
-            buffer.writeu8(b, 0, 44)  -- 0x2C
-            buffer.writeu8(b, 1, 0)   -- 空手
-            Fire(b)
-        end
-
--- Step 0: 卸下手持（先切自己，再空手）
-local function GetHeldSlot()
-    local pg = LocalPlayer:FindFirstChild("PlayerGui")
-    local hotbar = pg and pg:FindFirstChild("Hotbar")
-    local slots = hotbar and hotbar:FindFirstChild("Slots")
-    if not slots then return nil end
-    for _, slotFrame in ipairs(slots:GetChildren()) do
-        local inner = slotFrame:FindFirstChild("Frame")
-        local img = inner and inner:FindFirstChild("ImageButton")
-        if img then
-            local stroke = img:FindFirstChildOfClass("UIStroke")
-            if stroke and stroke.Transparency < 0.5 then
-                local numL = img:FindFirstChild("SlotNumber")
-                if numL then return tonumber(numL.Text) or nil end
-            end
-        end
-    end
-    return nil
-end
-
-local heldSlot = GetHeldSlot()
-if heldSlot then
-    -- 第一包：切到手持格
-    local b1 = buffer.create(3)
-    buffer.writeu8(b1, 0, 44)
-    buffer.writeu8(b1, 1, 1)
-    buffer.writeu8(b1, 2, heldSlot)
-    Fire(b1)
-    task.wait(0.1)
-
-    local b2 = buffer.create(2)
-    buffer.writeu8(b2, 0, 44)
-    buffer.writeu8(b2, 1, 0)
-    Fire(b2)
-    task.wait(0.4)
-end
-        
-        
+      
 -- Step 1: 检查目标枪在不在背包
 local guns = ScanHotbarGuns()
 local targetInBag = false
