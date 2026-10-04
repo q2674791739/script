@@ -1457,14 +1457,6 @@ AttrRight:AddDropdown("KillAuraPriority", {
     MaxVisibleDropdownItems = 4,
 })
 
--- 翻译名 → 英文原名
-local function GetEnglishGunName(translatedName)
-    for eng, trans in pairs(getgenv().GlobalWeaponTranslations) do
-        if trans == translatedName then return eng end
-    end
-    return translatedName
-end
-
 -- 扫 hotbar 里的所有枪
 local function ScanHotbarGuns()
     local pg = LocalPlayer:FindFirstChild("PlayerGui")
@@ -1481,14 +1473,37 @@ local function ScanHotbarGuns()
             local typeL = img:FindFirstChild("SlotType")
             local nameL = img:FindFirstChild("Name")
             if numL and typeL and nameL and typeL.Text == "Gun" then
+                local rawName = nameL.Text
+                local chinese = getgenv().GlobalWeaponTranslations[rawName] or rawName
                 table.insert(guns, {
                     slot = tonumber(numL.Text) or 0,
-                    name = nameL.Text,
+                    raw = rawName,
+                    chinese = chinese,
                 })
             end
         end
     end
     return guns
+end
+
+-- 检测当前是否有手持物品
+local function IsHoldingSomething()
+    local pg = LocalPlayer:FindFirstChild("PlayerGui")
+    local hotbar = pg and pg:FindFirstChild("Hotbar")
+    local slots = hotbar and hotbar:FindFirstChild("Slots")
+    if not slots then return false end
+
+    for _, slotFrame in ipairs(slots:GetChildren()) do
+        local inner = slotFrame:FindFirstChild("Frame")
+        local img = inner and inner:FindFirstChild("ImageButton")
+        if img then
+            local stroke = img:FindFirstChildOfClass("UIStroke")
+            if stroke and stroke.Transparency < 0.5 then
+                return true
+            end
+        end
+    end
+    return false
 end
 
 -- 自动准备：只留目标枪在第 1 格，其他枪全丢，前置非枪物品也丢
@@ -1501,8 +1516,6 @@ local function AutoPrepareGunKillAura(targetTranslatedName)
             Library:Notify("找不到 ZAP", 3)
             return
         end
-
-        local targetEng = GetEnglishGunName(targetTranslatedName)
 
         local function Fire(buf)
             pcall(function() ZAP_RELIABLE:FireServer(buf, {}) end)
@@ -1520,12 +1533,24 @@ local function AutoPrepareGunKillAura(targetTranslatedName)
             buffer.writeu8(b, 1, 0)
             Fire(b)
         end
+        local function Unhold()
+            local b = buffer.create(2)
+            buffer.writeu8(b, 0, 44)  -- 0x2C
+            buffer.writeu8(b, 1, 0)   -- 空手
+            Fire(b)
+        end
+
+        -- ★ Step 0: 如果手持着东西，先卸下（让 hotbar 显示回枪名，才能读到）
+        if IsHoldingSomething() then
+            Unhold()
+            task.wait(0.3)
+        end
 
         -- Step 1: 检查目标枪在不在背包
         local guns = ScanHotbarGuns()
         local targetInBag = false
         for _, g in ipairs(guns) do
-            if g.name == targetEng then targetInBag = true break end
+            if g.chinese == targetTranslatedName then targetInBag = true break end
         end
         if not targetInBag then
             Library:Notify("背包里没有 " .. targetTranslatedName, 4)
@@ -1539,7 +1564,7 @@ local function AutoPrepareGunKillAura(targetTranslatedName)
 
             local toDrop = nil
             for _, g in ipairs(curGuns) do
-                if g.name ~= targetEng then
+                if g.chinese ~= targetTranslatedName then
                     toDrop = g
                     break
                 end
@@ -1552,7 +1577,7 @@ local function AutoPrepareGunKillAura(targetTranslatedName)
             task.wait(0.2)
         end
 
-        -- Step 3: 丢第 1 格的非枪物品，直到第 1 格是枪
+        -- Step 3: 丢第 1 格的非枪物品
         for i = 1, 40 do
             local pg = LocalPlayer:FindFirstChild("PlayerGui")
             local hotbar = pg and pg:FindFirstChild("Hotbar")
@@ -1586,6 +1611,16 @@ local function AutoPrepareGunKillAura(targetTranslatedName)
             task.wait(0.2)
         end
 
+        -- Step 4: 切到第 1 格（让枪变手持）
+        local finalGuns = ScanHotbarGuns()
+        if #finalGuns > 0 then
+            local first = finalGuns[1]
+            for _, g in ipairs(finalGuns) do
+                if g.slot < first.slot then first = g end
+            end
+            SwitchTo(first.slot)
+        end
+
         Library:Notify("武器就绪", 3)
     end)
 end
@@ -1617,7 +1652,6 @@ end)
 AttrRight:AddToggle("KillAuraToggle", { Text = "开启远程杀戮", Default = false }):OnChanged(function(value)
     getgenv().KillAuraState = value
     if value then
-        -- ★ 开启时先清理：其他枪丢掉、前置物品丢掉，留目标枪在第 1 格
         local priority = Options.KillAuraPriority and Options.KillAuraPriority.Value
         if priority then
             AutoPrepareGunKillAura(priority)
@@ -1669,6 +1703,7 @@ AttrRight:AddToggle("KillAuraToggle", { Text = "开启远程杀戮", Default = f
         end)
     end
 end)
+
 -- 第 15 段
 -- ===== 教程页 =====
 local SkipDayInfoGroup = Tabs.Info:AddLeftGroupbox("“跳过一天”解锁教程")
