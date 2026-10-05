@@ -1,5 +1,10 @@
 -- 第 1 段
--- ══ 加载统计（Abacus）══
+if getgenv().KL_TK_Hub_Loaded then
+    return
+end
+getgenv().KL_TK_Hub_Loaded = true
+
+-- ══ 执行统计（Abacus）══
 pcall(function()
     task.spawn(function()
         pcall(function()
@@ -7,11 +12,6 @@ pcall(function()
         end)
     end)
 end)
-if getgenv().KL_TK_Hub_Loaded then
-    return
-end
-getgenv().KL_TK_Hub_Loaded = true
-
 local TARGET_PLACE_ID = 79327754502290
 if game.PlaceId ~= TARGET_PLACE_ID then
     return
@@ -37,8 +37,8 @@ local LocalPlayer = Players.LocalPlayer
 task.wait(1)
 
 local Window = Library:CreateWindow({
-    Title = "脚本名称",
-    Footer = "底部文字",
+    Title = " KL–烤或死–TK ",
+    Footer = "2674791739",
     NotifySide = "Right",
     ShowCustomCursor = false,
 })
