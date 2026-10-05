@@ -1,9 +1,9 @@
 -- 第 1 段
--- ═ 加载统计（一次性上报）═
+-- ══ 加载统计（Abacus）══
 pcall(function()
     task.spawn(function()
         pcall(function()
-            game:HttpGet("https://api.countapi.xyz/hit/kl-tk-hub-2024/kaohuosi_loads")
+            game:HttpGet("https://abacus.jasoncameron.dev/hit/kl-tk-hub/kaohuosi_loads")
         end)
     end)
 end)
