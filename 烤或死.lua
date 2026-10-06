@@ -8,7 +8,7 @@ getgenv().KL_TK_Hub_Loaded = true
 pcall(function()
     task.spawn(function()
         pcall(function()
-            game:HttpGet("https://abacus.jasoncameron.dev/hit/kl-tk-hub/kaohuosi_loads")
+            game:HttpGet("https://abacus.jasoncameron.dev/hit/kl-tk-hub/bake_or_die_loads")
         end)
     end)
 end)
