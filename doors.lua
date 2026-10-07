@@ -2161,7 +2161,21 @@ table.insert(Connections, LocalPlayer:GetAttributeChangedSignal("CurrentRoom"):C
 end))
 --第15段
 local LastHidingSpot = nil
+-- 反作弊速度同步 Hook
+local HookSupported = (hookmetamethod and newcclosure and getnamecallmethod)
+if HookSupported then
+    local OriginalHook
+    OriginalHook = hookmetamethod(game, "__namecall", newcclosure(function(Self, ...)
+        local Args = { ... }
+        local Method = getnamecallmethod()
 
+        if Self and Self.Name == "Crouch" and Method == "FireServer" then
+            Args[2] = true
+        end
+
+        return OriginalHook(Self, table.unpack(Args))
+    end))
+end
 table.insert(Connections, RunService.RenderStepped:Connect(function(dt)
     local Camera = workspace.CurrentCamera
 
