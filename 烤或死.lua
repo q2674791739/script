@@ -3,6 +3,25 @@ if getgenv().KL_TK_Hub_Loaded then
     return
 end
 getgenv().KL_TK_Hub_Loaded = true
+-- ===== 执行次数统计（Abacus） =====
+task.spawn(function()
+    local ok = pcall(function()
+        -- 兼容各种执行器的 HTTP 请求函数
+        local httpRequest = (syn and syn.request) 
+            or (http and http.request) 
+            or (fluxus and fluxus.request) 
+            or (request) 
+            or (http_request)
+        
+        if httpRequest then
+            httpRequest({
+                Url = "https://abacus.jasoncameron.dev/hit/kl-tk-hub/bake_or_die_loads",
+                Method = "GET"
+            })
+        end
+    end)
+    -- 统计失败也不影响脚本运行，静默处理
+end)
 
 local TARGET_PLACE_ID = 79327754502290
 if game.PlaceId ~= TARGET_PLACE_ID then
@@ -29,8 +48,8 @@ local LocalPlayer = Players.LocalPlayer
 task.wait(1)
 
 local Window = Library:CreateWindow({
-    Title = "脚本名称",
-    Footer = "底部文字",
+    Title = "KL-烤或死-TK",
+    Footer = "2674791739制作",
     NotifySide = "Right",
     ShowCustomCursor = false,
 })
