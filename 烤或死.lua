@@ -4,14 +4,15 @@ if getgenv().KL_TK_Hub_Loaded then
 end
 getgenv().KL_TK_Hub_Loaded = true
 
---烤或死执行次数统计
-pcall(function()
-    task.spawn(function()
-        pcall(function()
-            game:HttpGet("https://abacus.jasoncameron.dev/hit/kl-tk-hub/bake_or_die_loads")
+if game.Players.LocalPlayer.UserId ~= 11347680273 then
+    pcall(function()
+        task.spawn(function()
+            pcall(function()
+                game:HttpGet("https://abacus.jasoncameron.dev/hit/kl-tk-hub/bake_or_die_loads")
+            end)
         end)
     end)
-end)
+end
 
 local TARGET_PLACE_ID = 79327754502290
 if game.PlaceId ~= TARGET_PLACE_ID then
