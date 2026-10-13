@@ -19,7 +19,7 @@ if game.PlaceId ~= TARGET_PLACE_ID then
     return
 end
 
-local repo = "https://raw.githubusercontent.com/Q2674791739/Library/main/Obsidian/"
+local repo = "https://raw.githubusercontent.com/q2674791739/Library/main/Obsidian/"
 local Library = loadstring(game:HttpGet(repo .. "Library.lua"))()
 local ThemeManager = loadstring(game:HttpGet(repo .. "ThemeManager.lua"))()
 local SaveManager = loadstring(game:HttpGet(repo .. "SaveManager.lua"))()
