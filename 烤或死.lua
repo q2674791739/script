@@ -62,15 +62,11 @@ getgenv().GlobalItemTranslations = {
     ["AdvancedAutoTurret"] = "高级自动炮台", ["AutoTurret"] = "自动炮台", ["TurretAmmo"] = "炮塔弹药", ["BarbedWire"] = "铁丝网", ["Freezer"] = "冰柜", ["WoodenSpikes"] = "木质尖刺", ["StorageShelf"] = "储物架", ["Upgrader"] = "升级机", ["VaccumBackpack"] = "吸尘背包I", ["VaccumBackpack2"] = "吸尘背包II", ["IronRepairHammer"] = "铁制修理锤", ["RepairHammer"] = "木质修理锤",
 
     --搅拌机物品
-    ["Blackberry"] = "黑莓", ["Blueberry"] = "蓝莓", ["CherryBomb"] = "樱桃炸弹", ["Chicken"] = "鸡肉", ["ChiliPepper"] = "辣椒", ["ChocolateMilk"] = "巧克力牛奶", ["Coconut"] = "椰子", ["CactusMeat"] = "仙人掌肉", ["GoldenApple"] = "金苹果", ["GoldenCarrot"] = "金胡萝卜", ["GreenPea"] = "绿豌豆", ["Mango"] = "芒果", ["Milk"] = "牛奶", ["Mushroom"] = "蘑菇", ["Orange"] = "橙子", ["Peanut"] = "花生", ["Pineapple"] = "菠萝", ["Pickle"] = "酸黄瓜", ["PricklyPear"] = "仙人掌果实", ["Tamarind"] = "印度芒果", ["Turkey"] = "火鸡", ["Watermelon"] = "西瓜", ["IceCream"] = "冰淇淋", ["Doomberry"] = "厄运莓", ["GhostPepper"] = "幽灵辣椒", ["Apple"] = "苹果", ["Banana"] = "香蕉", ["Carrot"] = "胡萝卜", ["Tomato"] = "番茄", ["Cheese"] = "奶酪", ["Corn"] = "玉米", ["Egg"] = "鸡蛋", ["Eggplant"] = "茄子", ["Grape"] = "葡萄", ["Meat"] = "肉", ["Onion"] = "洋葱", ["Potato"] = "土豆", ["Pumpkin"] = "南瓜", ["Strawberry"] = "草莓", ["PinkPricklyPear"] = "仙人掌果实", ["EasterEgg"] = "复活节彩蛋", ["Gingerbread"] = "姜饼", ["HalloweenPie"] = "万圣节派", ["Snowball"] = "雪球", ["RadioactiveApple"] = "放射性苹果", ["RadioactiveBanana"] = "放射性香蕉", ["RadioactiveCarrot"] = "放射性胡萝卜", ["RadioactiveCorn"] = "放射性玉米", ["RadioactiveEgg"] = "放射性鸡蛋", ["RadioactiveRatMeat"] = "放射性老鼠肉", ["Yeast"] = "酵母",
-
-    --玩家属性加成果汁
-    ["JugChugJuice"] = "大罐畅饮果汁", ["JumpyJuice"] = "跳跳果汁", ["PewPewJuice"] = "砰砰果汁", ["PowPowJuice"] = "啪啪果汁", ["PowXXXJuice"] = "强力果汁", ["SpeedJuice"] = "速度果汁", ["SuperSpeedJuice"] = "超级速度果汁", ["EnragedYeast"] = "狂暴酵母", ["HyperYeast"] = "超级酵母", ["GreenJelly"] = "绿果冻", ["OrangeJelly"] = "橙果冻", ["PinkJelly"] = "粉果冻",
-
+    ["Blackberry"] = "黑莓", ["Blueberry"] = "蓝莓", ["CherryBomb"] = "樱桃炸弹", ["Chicken"] = "鸡肉", ["ChiliPepper"] = "辣椒", ["ChocolateMilk"] = "巧克力牛奶", ["Coconut"] = "椰子", ["CactusMeat"] = "仙人掌肉", ["GoldenApple"] = "金苹果", ["GoldenCarrot"] = "金胡萝卜", ["GreenPea"] = "绿豌豆", ["Mango"] = "芒果", ["Milk"] = "牛奶", ["Mushroom"] = "蘑菇", ["Orange"] = "橙子", ["Peanut"] = "花生", ["Pineapple"] = "菠萝", ["Pickle"] = "酸黄瓜", ["PricklyPear"] = "仙人掌果实", ["Tamarind"] = "印度芒果", ["Turkey"] = "火鸡", ["Watermelon"] = "西瓜", ["IceCream"] = "冰淇淋", ["Doomberry"] = "厄运莓",  ["Apple"] = "苹果", ["Banana"] = "香蕉", ["Carrot"] = "胡萝卜", ["Tomato"] = "番茄", ["Cheese"] = "奶酪", ["Corn"] = "玉米", ["Egg"] = "鸡蛋", ["Eggplant"] = "茄子", ["Grape"] = "葡萄", ["Meat"] = "肉", ["Onion"] = "洋葱", ["Potato"] = "土豆", ["Pumpkin"] = "南瓜", ["Strawberry"] = "草莓", ["PinkPricklyPear"] = "仙人掌果实", ["EasterEgg"] = "复活节彩蛋", ["Gingerbread"] = "姜饼", ["HalloweenPie"] = "万圣节派", ["Snowball"] = "雪球", ["RadioactiveApple"] = "放射性苹果", ["RadioactiveBanana"] = "放射性香蕉", ["RadioactiveCarrot"] = "放射性胡萝卜", ["RadioactiveCorn"] = "放射性玉米", ["RadioactiveEgg"] = "放射性鸡蛋", ["RadioactiveRatMeat"] = "放射性老鼠肉", ["Yeast"] = "酵母", ["EnragedYeast"] = "狂暴酵母", ["HyperYeast"] = "超级酵母", ["DevilEggZombie"] = "恶魔蛋丧尸", ["MarshmallowMummy"] = "棉花糖木乃伊", ["Skeleton"] = "骷髅", ["GhostPepper"] = "幽灵辣椒", ["ExplosiveMeat"] = "爆炸肉", ["Marshmallow"] = "棉花糖",
     --丧尸，怪物，NPC尸体
     ["TomatoZombie"] = "番茄丧尸", ["CarrotZombie"] = "胡萝卜丧尸", ["AppleZombie"] = "苹果丧尸", ["BananaZombie"] = "香蕉丧尸", ["BlueberryZombie"] = "蓝莓丧尸", ["CherryBombZombie"] = "樱桃炸弹丧尸", ["GrapeZombie"] = "葡萄丧尸", ["StrawberryZombie"] = "草莓丧尸", ["TamarindZombie"] = "印度芒果僵尸", ["OrangeZombie"] = "橙子丧尸", ["PeanutZombie"] = "花生丧尸", ["EggplantZombie"] = "茄子丧尸", ["GoldenCarrotZombie"] = "金胡萝卜丧尸", ["PickleZombie"] = "酸黄瓜丧尸", ["CornZombie"] = "玉米丧尸", ["CoconutZombie"] = "椰子丧尸", ["MangoZombie"] = "芒果丧尸", ["PineappleZombie"] = "菠萝丧尸", ["PotatoZombie"] = "土豆丧尸", ["WatermelonZombie"] = "西瓜丧尸", ["Zombie"] = "丧尸", ["OnionZombie"] = "洋葱丧尸", ["TankZombie"] = "巨型丧尸", ["CrawlerZombie"] = "爬行丧尸", ["MutatedCrawlerZombie"] = "变异爬行丧尸", ["EnragedFastZombie"] = "狂暴快速丧尸", ["FastZombie"] = "快速丧尸", ["MushroomZombie"] = "蘑菇丧尸", ["PeaZombie"] = "豌豆丧尸", ["RadioactiveAppleZombie"] = "放射性苹果丧尸", ["RadioactiveBananaZombie"] = "放射性香蕉丧尸", ["RadioactiveCarrotZombie"] = "放射性胡萝卜丧尸", ["RadioactiveCornZombie"] = "放射性玉米丧尸", ["MinigunDoomberryZombie"] = "机枪厄运莓丧尸", ["PinkJellyZombie"] = "粉红凝胶丧尸", ["GreenJellyZombie"] = "绿色凝胶丧尸", ["OrangeJellyZombie"] = "橙色凝胶丧尸", ["AmputeeZombie"] = "截肢丧尸", ["MetalBucketZombie"] = "铁桶丧尸", ["BabyGobbles"] = "幼年高布尔", ["BankerCivilian"] = "银行家平民", ["Civilian"] = "平民", ["EnragedCactusCreeper"] = "狂暴仙人掌爬行者", ["EnragedCrawlerZombie"] = "狂暴爬行丧尸", ["EnragedZombie"] = "狂暴丧尸", ["WoodenNailZombie"] = "木钉丧尸", ["RatMeat"] = "老鼠肉", ["SewerRat"] = "下水道老鼠", ["RadioactiveRat"] = "放射性老鼠", ["FireZombie"] = "火焰丧尸", ["GingerbreadMan"] = "姜饼人", ["PepperGhost"] = "辣椒幽灵", ["CactusCreeper"] = "仙人掌爬行者",
 
-    --固定Boss/剧情boss/条件boss/限时活动boss
+    --固定Boss/剧情boss/条件boss/限时活动怪物
     ["Gobbles"] = "高布尔", ["LostSpirit"] = "迷失游魂", ["NeoSnowman"] = "雪人", ["RatBossKing"] = "鼠鼠国王", ["Scarecrow"] = "稻草人", ["Snowman"] = "雪人", ["EvilCow"] = "邪恶的牛", ["EvilChicken"] = "邪恶的鸡", ["EvilChick"] = "邪恶的鸡", ["GrimcrustSupremeHead"] = "至尊头", ["DoomberryZombie"] = "厄运莓丧尸"
 }
 getgenv().GlobalWeaponTranslations = {
@@ -427,19 +423,27 @@ zombieText.TextSize = 18 zombieText.Text = "当前怪物状态: 死机"
 zombieText.Visible = false zombieText.Parent = screenGui
 getgenv().ZombieIsActive = false getgenv().ZombieStatusConn = nil
 
+-- ★ 这里替换为精准锁定 DayNightCycle 的逻辑
 local function CheckZombieActive()
     local pg = LocalPlayer:FindFirstChild("PlayerGui")
     if not pg then return false end
-    for _, desc in ipairs(pg:GetDescendants()) do
-        if (desc:IsA("TextLabel") or desc:IsA("TextButton") or desc:IsA("TextBox")) and desc.Text then
-            local txt = desc.Text
-            if string.find(txt, "Survive the night", 1, true) then return true end
-            if string.find(txt, "Night", 1, true) then return true end
-            if string.find(txt, "Day", 1, true) then
-                if not (string.find(txt, "Day 0", 1, true) or string.find(txt, "Day0", 1, true)) then return true end
-            end
+    
+    -- 精准锁定天数 UI 路径，排除 Tooltip 的干扰
+    local dayNightGui = pg:FindFirstChild("DayNightCycle")
+    local dayLabel = dayNightGui and dayNightGui:FindFirstChild("TextLabel")
+    
+    if dayLabel and dayLabel.Text then
+        local txt = dayLabel.Text
+        -- 1. 如果是夜晚（包含 Night），绝对是活跃状态
+        if string.find(txt, "Night", 1, true) then 
+            return true 
+        end
+        -- 2. 如果是 Day 且不是 Day 0（比如 Day 1, Day 23），说明已经是打怪阶段
+        if string.find(txt, "Day", 1, true) and not string.find(txt, "Day 0", 1, true) and not string.find(txt, "Day0", 1, true) then
+            return true 
         end
     end
+    
     return false
 end
 
@@ -947,7 +951,7 @@ AutoGroup:AddToggle("AutoDeposit", {
                     elseif string.find(typeStr, "Baked Good") then
                         targetMachineName = "SellStand"
                     elseif string.find(typeStr, "Battery") then
-                        targetMachineName = "Generator"
+                        targetMachineName = "SewerGenerator"
                     elseif string.find(typeStr, "Fuse") then
                         targetMachineName = "FuseBox"
                     end
@@ -1261,6 +1265,9 @@ RunService.Heartbeat:Connect(function()
     local char = LocalPlayer.Character
     if not char or not char:FindFirstChild("HumanoidRootPart") then return end
 
+    -- ★ 新增防捡锁：如果正在丢弃物品，直接跳过，不和丢弃抢东西
+    if getgenv().IsDroppingItems then return end
+
     local weaponName, slotType = GetHeldWeaponInfo()
     local holdingWeapon = weaponName and slotType and WEAPON_SLOT_TYPES[slotType]
 
@@ -1336,6 +1343,7 @@ RunService.Heartbeat:Connect(function()
         end
     end
 end)
+
 
 -- 第 10 段
 local function AutoReadCode(promptPath, codeName, uiPath)
@@ -1967,6 +1975,9 @@ local function DropItemsBeforeHeldGun()
             return
         end
 
+        -- ★ 开启防捡锁
+        getgenv().IsDroppingItems = true
+
         local function Fire(buf) pcall(function() ZAP_RELIABLE:FireServer(buf, {}) end) end
         local function SwitchTo(slotNum)
             local b = buffer.create(3)
@@ -1987,7 +1998,10 @@ local function DropItemsBeforeHeldGun()
         local maxSafety = needDrop * 30 + 20
 
         while slotCleared < needDrop and safety < maxSafety do
-            if getgenv().KillAuraDropToken ~= myToken then return end
+            if getgenv().KillAuraDropToken ~= myToken then 
+                getgenv().IsDroppingItems = false -- ★ 异常中断解锁
+                return 
+            end
             safety = safety + 1
 
             local qty = GetSlot1Quantity()
@@ -1998,7 +2012,10 @@ local function DropItemsBeforeHeldGun()
                 SwitchTo(1)
                 task.wait(0.12)
                 for i = 1, qty do
-                    if getgenv().KillAuraDropToken ~= myToken then return end
+                    if getgenv().KillAuraDropToken ~= myToken then 
+                        getgenv().IsDroppingItems = false -- ★ 异常中断解锁
+                        return 
+                    end
                     DropHeld()
                     task.wait(0.12)
                 end
@@ -2006,6 +2023,9 @@ local function DropItemsBeforeHeldGun()
                 task.wait(0.1)
             end
         end
+
+        task.wait(0.5) -- 等待服务器响应完毕
+        getgenv().IsDroppingItems = false -- ★ 解除防捡锁
 
         if getgenv().KillAuraDropToken == myToken then
             Library:Notify("已丢弃当前手持枪前面的所有物品", 3)
@@ -2021,6 +2041,7 @@ AttrRight:AddButton({
     DoubleClick = false,
 })
 
+
 -- 第 16 段
 local SkipDayInfoGroup = Tabs.Info:AddLeftGroupbox("“跳过一天”解锁教程")
 SkipDayInfoGroup:AddLabel("餐厅门旁边的“跳过一天”如何解锁？")
@@ -2031,7 +2052,7 @@ SkipDayInfoGroup:AddLabel("捡起DVD光盘之后，返回餐厅")
 SkipDayInfoGroup:AddLabel("与餐厅后面的电脑交互，将软盘插入电脑")
 SkipDayInfoGroup:AddLabel("等待剧情结束后，你会获得一张钥匙卡")
 SkipDayInfoGroup:AddLabel("再次返回食品工厂使用这张钥匙卡")
-SkipDayInfoGroup:AddLabel("与食品工厂大门旁边的安全扫描仪交互")
+SkipDayInfoGroup:AddLabel("然后击败邪恶厨师Boss（可直接传送挑战）")
 SkipDayInfoGroup:AddLabel("“跳过一天”以及食品工厂则会永久解锁")
 
 local KillAuraInfoGroup = Tabs.Info:AddLeftGroupbox("杀戮光环说明")
